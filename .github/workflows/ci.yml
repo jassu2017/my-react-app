@@ -15,7 +15,7 @@ jobs:
         with: 
           path: C:/Users/jaysh/AppData/Roaming/npm-cache
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-key: |
+          restore-keys: |
             ${{ runner.os }}-node-
             
       - name: Use nodejs
