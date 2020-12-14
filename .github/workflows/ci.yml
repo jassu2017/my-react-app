@@ -10,20 +10,46 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: cache node_modules
+        id: npm-cache
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+      - uses: actions/cache@v2
+        with: 
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+            
       - name: Use nodejs
         uses: actions/setup-node@v1
         with:
           node-version: "12.x"
+       
       - run: npm ci
       #- run: npm run format:check
       - run: npm run format
       - run: npm test -- --coverage
         env:
           CI: true
+      - name: upload code coverage file    
+        uses: actions/upload-artifact@v1
+        with:
+          name: code-coverage
+          path: coverage
+
       - name: Build Project
         if: github.event_name == 'push'
         run: npm run build
       - run: npm install -g surge
+    
+      - name: upload build folder 
+        if: github.event_name == 'push'   
+        uses: actions/upload-artifact@v1
+        with:
+          name: build 
+          path: build
+
       - name: Deploy to Staging
         if: github.event_name == 'push'
         run: npx surge --project ./build --domain zealous-linen.surge.sh
