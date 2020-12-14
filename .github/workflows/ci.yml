@@ -13,7 +13,7 @@ jobs:
       - name: cache node_modules
         uses: actions/cache@v1
         with: 
-          path: C:\Users\jaysh\AppData\Roaming\npm-cache
+          path: C:/Users/jaysh/AppData/Roaming/npm-cache
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-key: |
             ${{ runner.os }}-node-
